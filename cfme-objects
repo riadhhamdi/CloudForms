@@ -16,7 +16,7 @@ export)
 echo   
 echo -e "${lb} Enter Git repository URI | example: https://gitlab.com/grplabsidc/test.git ${au}"
 read GITREPO 
-echo "${lb} Enter Branch (will be created if not existant)${au} "
+echo -e "${lb} Enter Branch (will be created if not existant)${au} "
 read BRANCH
 GITDIR=$(echo $GITREPO |awk -F '/' '{print $NF}'  |awk -F '.git' '{print $1}')
 cd /root 
@@ -55,13 +55,13 @@ GITDIR=$(echo $GITREPO |awk -F '/' '{print $NF}'  |awk -F '.git' '{print $1}')
 rm -rf /tmp/$GITDIR
 cd /tmp
 git clone $GITREPO
+cd /tmp/${GITDIR}
 
 echo -e "${lb} Enter the tag to import from ${au}"
 echo "Below the list of available tags | latest will point to the latest tag"
 echo -e "${gr} $(git tag -l) ${au}"
 read TAG
 
-cd /tmp/${GITDIR}
 if [ $TAG == "latest" ]
 then 
 TAG=$(git tag | tail -1)
