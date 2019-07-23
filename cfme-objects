@@ -1,0 +1,62 @@
+#!/bin/bash 
+ 
+
+
+
+## First Usage of the script is to push a specific branch
+case $1 in
+export) 
+echo "Enter Git repository URI | example: https://gitlab.com/grplabsidc/test.git "
+echo 
+read GITREPO 
+echo "Enter Branch (will be created if not existant) "
+read BRANCH
+GITDIR=$(echo $GITREPO |awk -F '/' '{print $NF}'  |awk -F '.git' '{print $1}')
+cd /root 
+rm -rf /root/$GITDIR
+rm -rf /root/CFME-export-$BRANCH
+###########################################################################
+##      Creating a local export directory
+###########################################################################
+mkdir -p /root/CFME-export-$BRANCH
+echo -n "exporting "
+miqexport all /root/CFME-export-$BRANCH
+
+###########################################################################
+##       Intiating Git Repo and moving to the branch
+###########################################################################
+git clone $GITREPO
+cd $GITDIR ; git checkout $BRANCH || git branch $BRANCH 
+
+###########################################################################
+##        Copying CFME Objects and commiting
+###########################################################################
+rm -rf ./*
+yes | cp -r /root/CFME-export-$BRANCH/* .
+git add *
+git commit -a -m "pushing all into the branch "
+git tag $(date '+%Y-%m-%d_%H-%M')
+git push origin $BRANCH --tags ;; 
+
+import)
+
+
+echo "Enter Git repository URI | example: https://gitlab.com/grplabsidc/test.git "
+echo 
+read GITREPO
+echo "Enter Branch to import from "
+read BRANCH
+GITDIR=$(echo $GITREPO |awk -F '/' '{print $NF}'  |awk -F '.git' '{print $1}')
+rm -rf /tmp/$GITDIR
+cd /tmp
+git clone $GITREPO
+
+cd /tmp/${GITDIR}
+git checkout ${BRANCH}
+miqimport --overwrite all  .
+;;
+
+*) echo "Usage cfme-objets export | import";;
+esac 
+
+
