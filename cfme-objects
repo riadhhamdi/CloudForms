@@ -40,6 +40,7 @@ cd $GITDIR ; git checkout $BRANCH || git branch $BRANCH
 ###########################################################################
 rm -rf ./*
 yes | cp -r /root/CFME-export-$BRANCH/* .
+sed -i sed '/tenant_name: LDC/d' service_catalogs/* 
 git add *
 git commit -a -m "pushing all into the branch "
 git tag $(date '+%Y-%m-%d_%H-%M')
