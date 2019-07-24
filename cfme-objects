@@ -15,9 +15,11 @@ case $1 in
 export)
 echo   
 echo -e "${lb} Enter Git repository URI | example: https://gitlab.com/grplabsidc/test.git ${au}"
-read GITREPO 
-echo -e "${lb} Enter Branch (will be created if not existant)${au} "
-read BRANCH
+#read GITREPO 
+read -p "git repository: " GITREPO
+echo -e "${lb} Choose the environment [DEV, QA, PRD] (you may another choose a suffix) ${au} "
+read -p "export suffix: " BRANCH
+#read BRANCH
 GITDIR=$(echo $GITREPO |awk -F '/' '{print $NF}'  |awk -F '.git' '{print $1}')
 cd /root 
 rm -rf /root/$GITDIR
@@ -51,7 +53,8 @@ import)
 
 echo -e "${lb} Enter Git repository URI | example: https://gitlab.com/grplabsidc/test.git ${au}"
 echo 
-read GITREPO
+#read GITREPO
+read -p "git repository: " GITREPO
 GITDIR=$(echo $GITREPO |awk -F '/' '{print $NF}'  |awk -F '.git' '{print $1}')
 rm -rf /tmp/$GITDIR
 cd /tmp
@@ -61,7 +64,8 @@ cd /tmp/${GITDIR}
 echo -e "${lb} Enter the tag to import from ${au}"
 echo "Below the list of available tags | latest will point to the latest tag"
 echo -e "${gr} $(git tag -l) ${au}"
-read TAG
+#read TAG
+read -p "chosen version: " TAG
 
 if [ $TAG == "latest" ]
 then 
